@@ -1,0 +1,14 @@
+# service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: website-service
+spec:
+  type: NodePort # or LoadBalancer if using a cloud provider
+  selector:
+    app: website
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30080  # Port to access from outside (if NodePort)
