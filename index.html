@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beautiful Image Gallery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+
+        /* Navigation */
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            color: #3498db;
+        }
+
+        .nav-links a {
+            color: #2c3e50;
+            text-decoration: none;
+            margin-left: 2rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #3498db;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                        url('images/gate.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 1rem;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(52, 152, 219, 0.3), rgba(44, 62, 80, 0.3));
+        }
+
+        .hero-content {
+            max-width: 800px;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: fadeInDown 1s ease;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            animation: fadeInUp 1s ease;
+        }
+
+        /* Search and Filter Section */
+        .search-filter {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            padding-left: 2.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 20px;
+            background: #f4f4f4;
+            color: #2c3e50;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #3498db;
+            color: white;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 1rem;
+        }
+
+        .section {
+            margin-bottom: 4rem;
+        }
+
+        .section h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+            font-size: 2.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: #3498db;
+            border-radius: 3px;
+        }
+
+        /* Image Grid */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .image-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .image-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .image-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .image-card-content {
+            padding: 1.5rem;
+            background: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .image-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .image-card p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .image-card .category {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(52, 152, 219, 0.9);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            opacity: 1;
+        }
+
+        .modal-content {
+            position: relative;
+            margin: auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 1200px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .modal img {
+            width: 100%;
+            height: auto;
+            max-height: 90vh;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+        }
+
+        .close {
+            position: absolute;
+            right: 25px;
+            top: 10px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .close:hover {
+            transform: rotate(90deg);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .search-filter {
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="#" class="logo">
+                <i class="fas fa-images"></i>
+                Image Gallery
+            </a>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#gallery">Gallery</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Welcome to Our Gallery</h1>
+            <p>Explore our beautiful collection of images</p>
+            <a href="#gallery" class="btn">View Gallery</a>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Gallery Section -->
+        <section class="section" id="gallery">
+            <h2>Image Gallery</h2>
+            
+            <!-- Search and Filter -->
+            <div class="search-filter">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search images...">
+                </div>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-category="all">All</button>
+                    <button class="filter-btn" data-category="nature">Nature</button>
+                    <button class="filter-btn" data-category="architecture">Architecture</button>
+                    <button class="filter-btn" data-category="art">Art</button>
+                    <button class="filter-btn" data-category="screenshots">Screenshots</button>
+                    <button class="filter-btn" data-category="other">Other</button>
+                </div>
+            </div>
+
+            <div class="image-grid">
+                <!-- Original Images -->
+                <div class="image-card" data-category="nature">
+                    <span class="category">Nature</span>
+                    <img src="images/77621fe47ccc2b2ab5371a9f5ed61684.jpg" alt="Nature Scene 1" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Nature Scene 1</h3>
+                        <p>A stunning view that captures the essence of nature.</p>
+                        <button class="btn" onclick="openModal('images/77621fe47ccc2b2ab5371a9f5ed61684.jpg')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="architecture">
+                    <span class="category">Architecture</span>
+                    <img src="images/db6615f6d2f992653c9c2321cc5b5ba4.jpg" alt="Architecture Scene 1" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Architecture Scene 1</h3>
+                        <p>Another amazing perspective of architectural beauty.</p>
+                        <button class="btn" onclick="openModal('images/db6615f6d2f992653c9c2321cc5b5ba4.jpg')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="art">
+                    <span class="category">Art</span>
+                    <img src="images/5314e40d823d4ed86a25f29587fce2ca.png" alt="Art Scene 1" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Art Scene 1</h3>
+                        <p>A unique view that showcases artistic beauty.</p>
+                        <button class="btn" onclick="openModal('images/5314e40d823d4ed86a25f29587fce2ca.png')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="nature">
+                    <span class="category">Nature</span>
+                    <img src="images/1902726db3541a532a37913557986157.jpg" alt="Nature Scene 2" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Nature Scene 2</h3>
+                        <p>Capturing moments of natural wonder.</p>
+                        <button class="btn" onclick="openModal('images/1902726db3541a532a37913557986157.jpg')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="architecture">
+                    <span class="category">Architecture</span>
+                    <img src="images/eb573c0109f07bfd8e7bb27d9b7dc6a7.jpg" alt="Architecture Scene 2" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Architecture Scene 2</h3>
+                        <p>A breathtaking view of architectural design.</p>
+                        <button class="btn" onclick="openModal('images/eb573c0109f07bfd8e7bb27d9b7dc6a7.jpg')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="art">
+                    <span class="category">Art</span>
+                    <img src="images/043a1cc710d2124e52321aacac2360d1.jpg" alt="Art Scene 2" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Art Scene 2</h3>
+                        <p>Exploring the beauty of artistic expression.</p>
+                        <button class="btn" onclick="openModal('images/043a1cc710d2124e52321aacac2360d1.jpg')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Additional Images -->
+                <div class="image-card" data-category="screenshots">
+                    <span class="category">Screenshots</span>
+                    <img src="images/Screenshot 2025-01-13 005450.png" alt="Screenshot 1" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Screenshot 1</h3>
+                        <p>Captured moment from January 13, 2025.</p>
+                        <button class="btn" onclick="openModal('images/Screenshot 2025-01-13 005450.png')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="screenshots">
+                    <span class="category">Screenshots</span>
+                    <img src="images/Screenshot 2025-01-13 005340.png" alt="Screenshot 2" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Screenshot 2</h3>
+                        <p>Another captured moment from January 13, 2025.</p>
+                        <button class="btn" onclick="openModal('images/Screenshot 2025-01-13 005340.png')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="screenshots">
+                    <span class="category">Screenshots</span>
+                    <img src="images/Screenshot 2025-01-13 005328.png" alt="Screenshot 3" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Screenshot 3</h3>
+                        <p>Additional capture from January 13, 2025.</p>
+                        <button class="btn" onclick="openModal('images/Screenshot 2025-01-13 005328.png')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="screenshots">
+                    <span class="category">Screenshots</span>
+                    <img src="images/Screenshot 2025-01-04 154532.png" alt="Screenshot 4" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Screenshot 4</h3>
+                        <p>Captured moment from January 4, 2025.</p>
+                        <button class="btn" onclick="openModal('images/Screenshot 2025-01-04 154532.png')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="screenshots">
+                    <span class="category">Screenshots</span>
+                    <img src="images/Screenshot 2025-01-04 154131.png" alt="Screenshot 5" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Screenshot 5</h3>
+                        <p>Another capture from January 4, 2025.</p>
+                        <button class="btn" onclick="openModal('images/Screenshot 2025-01-04 154131.png')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="screenshots">
+                    <span class="category">Screenshots</span>
+                    <img src="images/Screenshot 2025-01-04 153955.png" alt="Screenshot 6" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Screenshot 6</h3>
+                        <p>Additional capture from January 4, 2025.</p>
+                        <button class="btn" onclick="openModal('images/Screenshot 2025-01-04 153955.png')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="screenshots">
+                    <span class="category">Screenshots</span>
+                    <img src="images/Screenshot 2025-01-04 152743.png" alt="Screenshot 7" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Screenshot 7</h3>
+                        <p>Another moment captured on January 4, 2025.</p>
+                        <button class="btn" onclick="openModal('images/Screenshot 2025-01-04 152743.png')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="screenshots">
+                    <span class="category">Screenshots</span>
+                    <img src="images/Screenshot 2024-11-17 201045.png" alt="Screenshot 8" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Screenshot 8</h3>
+                        <p>Captured on November 17, 2024.</p>
+                        <button class="btn" onclick="openModal('images/Screenshot 2024-11-17 201045.png')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="screenshots">
+                    <span class="category">Screenshots</span>
+                    <img src="images/Screenshot 2024-11-17 201037.png" alt="Screenshot 9" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Screenshot 9</h3>
+                        <p>Another capture from November 17, 2024.</p>
+                        <button class="btn" onclick="openModal('images/Screenshot 2024-11-17 201037.png')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="screenshots">
+                    <span class="category">Screenshots</span>
+                    <img src="images/Screenshot 2024-11-17 201028.png" alt="Screenshot 10" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Screenshot 10</h3>
+                        <p>Additional capture from November 17, 2024.</p>
+                        <button class="btn" onclick="openModal('images/Screenshot 2024-11-17 201028.png')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="screenshots">
+                    <span class="category">Screenshots</span>
+                    <img src="images/Screenshot 2024-11-17 200724.png" alt="Screenshot 11" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Screenshot 11</h3>
+                        <p>Another moment from November 17, 2024.</p>
+                        <button class="btn" onclick="openModal('images/Screenshot 2024-11-17 200724.png')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="screenshots">
+                    <span class="category">Screenshots</span>
+                    <img src="images/Screenshot 2024-10-07 021841.png" alt="Screenshot 12" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Screenshot 12</h3>
+                        <p>Captured on October 7, 2024.</p>
+                        <button class="btn" onclick="openModal('images/Screenshot 2024-10-07 021841.png')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="other">
+                    <span class="category">Other</span>
+                    <img src="images/psw.png" alt="PSW Image" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>PSW Image</h3>
+                        <p>A unique image from the collection.</p>
+                        <button class="btn" onclick="openModal('images/psw.png')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="other">
+                    <span class="category">Other</span>
+                    <img src="images/Screenshot 2024-03-13 222000.png" alt="March Screenshot" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>March Screenshot</h3>
+                        <p>Captured on March 13, 2024.</p>
+                        <button class="btn" onclick="openModal('images/Screenshot 2024-03-13 222000.png')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="other">
+                    <span class="category">Other</span>
+                    <img src="images/1488478b6d40d46009ffe409c5471ee1.jpg" alt="Additional Image" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Additional Image</h3>
+                        <p>Another beautiful image from the collection.</p>
+                        <button class="btn" onclick="openModal('images/1488478b6d40d46009ffe409c5471ee1.jpg')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-card" data-category="other">
+                    <span class="category">Other</span>
+                    <img src="images/photo parnik.jpg" alt="Parnik Photo" onclick="openModal(this.src)">
+                    <div class="image-card-content">
+                        <h3>Parnik Photo</h3>
+                        <p>A special photo from the collection.</p>
+                        <button class="btn" onclick="openModal('images/photo parnik.jpg')">
+                            <i class="fas fa-expand"></i> View Full Size
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="section" id="contact">
+            <h2>Contact Us</h2>
+            <div style="max-width: 600px; margin: 0 auto;">
+                <form id="contactForm" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <input type="text" id="name" placeholder="Your Name" required style="padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px;">
+                    <input type="email" id="email" placeholder="Your Email" required style="padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px;">
+                    <textarea id="message" placeholder="Your Message" required style="padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px; height: 150px;"></textarea>
+                    <button type="submit" class="btn">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal -->
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="Full size image">
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Image Gallery. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+
+        function openModal(imgSrc) {
+            modal.style.display = "block";
+            modalImg.src = imgSrc;
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        function closeModal() {
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = "none", 300);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Image filtering
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const imageCards = document.querySelectorAll('.image-card');
+        const searchInput = document.getElementById('searchInput');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                button.classList.add('active');
+
+                const category = button.getAttribute('data-category');
+                
+                imageCards.forEach(card => {
+                    if (category === 'all' || card.getAttribute('data-category') === category) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Search functionality
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            imageCards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const description = card.querySelector('p').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Form submission handling
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+
+            // Here you would typically send the data to a server
+            console.log('Form submitted:', { name, email, message });
+            
+            // Show success message
+            alert('Thank you for your message! We will get back to you soon.');
+            
+            // Reset form
+            this.reset();
+        });
+
+        // Add scroll reveal animation
+        window.addEventListener('scroll', () => {
+            const cards = document.querySelectorAll('.image-card');
+            cards.forEach(card => {
+                const cardTop = card.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (cardTop < windowHeight * 0.8) {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
